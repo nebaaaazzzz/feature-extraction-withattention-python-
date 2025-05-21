@@ -2,15 +2,14 @@
 import torch
 import os 
 from torch import nn
-import torchvision
 import datetime
 import time
 from torchvision import transforms
 from tiny_imagenet import TinyImageNet
 import utils
 from resnet import resnet18_with_ela
-
-def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, args):
+import wandb
+def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, args , runs):
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter("lr", utils.SmoothedValue(window_size=1, fmt="{value}"))
@@ -36,6 +35,12 @@ def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, arg
         metric_logger.meters["acc1"].update(acc1.item(), n=batch_size)
         metric_logger.meters["acc5"].update(acc5.item(), n=batch_size)
         metric_logger.meters["img/s"].update(batch_size / (time.time() - start_time))
+        if i % 49 == 0:
+            runs.log({"train_loss": loss.item()})
+            runs.log({"train_acc1": acc1.item()})
+            runs.log({"train_acc5": acc5.item()})
+            runs.log({"learning_rate": optimizer.param_groups[0]["lr"]})
+            runs.log({"img/s": batch_size / (time.time() - start_time)})
     print(f"{header} Acc@1 {metric_logger.acc1.global_avg:.3f} Acc@5 {metric_logger.acc5.global_avg:.3f}")
 
 
@@ -96,7 +101,7 @@ def evaluate(model, criterion, data_loader, device, print_freq=100, log_suffix="
 
 
 
-def main(args):
+def main(args , runs):
     global best_acc1
 
     print(args)
@@ -204,7 +209,7 @@ def main(args):
     from tqdm import tqdm
     for epoch in tqdm(range(args.start_epoch, args.epochs)):
         
-        train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, args)
+        train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, args ,runs)
         lr_scheduler.step()
         acc1 = evaluate(model, criterion, data_loader_test, device=device)
         if args.output_dir:
@@ -221,6 +226,7 @@ def main(args):
             if acc1 > best_acc1:
                 best_acc1 = max(acc1, best_acc1)
                 utils.save_on_master(checkpoint, os.path.join(args.output_dir, "checkpoint_best.pth"))
+    runs.log({"best_acc1": best_acc1})
     print(f"Best Accuracy {best_acc1:.3f}")
     total_time = time.time() - start_time
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
@@ -229,4 +235,15 @@ def main(args):
 
 if __name__ == "__main__":
     args = utils.get_args_parser().parse_args()
-    main(args)
+    wandb.login()
+ 
+    run = wandb.init(
+        project="feature extraciton",  # Specify your project
+        config=args ,
+        group="resnet18withela"
+    )
+    main(args , run )
+    
+    run.finish()
+    
+
