@@ -3,45 +3,10 @@ import torch
 import torch.nn as nn
 
 
-class BasicBlockWithELA(BasicBlock):
-    expansion = 1
-
-    def __init__(self, inplanes, planes, stride=1, downsample=None, groups=1,
-                 base_width=64, dilation=1, norm_layer=None, kernel_size=7, num_groups=16):
-        super().__init__(inplanes, planes, stride, downsample, groups, base_width, dilation, norm_layer)
-
-        self.ela = EfficientLocalizationAttention(planes, kernel_size=kernel_size, num_groups=num_groups)
-
-    def forward(self, x):
-        identity = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        if self.downsample is not None:
-            identity = self.downsample(x)
-
-        out += identity
-        out = self.relu(out)
-
-        # Apply ELA attention
-        out = self.ela(out)
-
-        return out
-def get_resnet18(with_attention=True , **kwargs):
-    """
-    Creates a ResNet-18 model with ELA blocks.
-    """
-    model = None
-    if with_attention : 
-        model = ResNet(BasicBlockWithELA, [2, 2, 2, 2], **kwargs)
-    else :
-        model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
-    return model    
+# ELA-T as kernel size = 5, groups = in_channels, num_group = 32;
+# ELA-B as kernel size = 7, groups = in_channels, num_group = 16;
+# ELA-S is kernel size = 5, groups = in_channels/8, num_group = 16.
+# ELA-L is kernel size = 7, groups = in_channels/8, num_group = 16.
 
 class EfficientLocalizationAttention(nn.Module):
     def __init__(self, channel, kernel_size=7, num_groups=16):
@@ -64,3 +29,46 @@ class EfficientLocalizationAttention(nn.Module):
         x_w = self.sigmoid(self.gn(self.conv(x_w))).view(b, c, 1, w)  # [b,c,1,w]
 
         return x * x_h * x_w
+    
+    
+class BasicBlockWithELA(BasicBlock):
+    expansion = 1
+
+    def __init__(self, inplanes, planes, stride=1, downsample=None, groups=1,
+                 base_width=64, dilation=1, norm_layer=None, kernel_size=7, num_groups=16):
+        super().__init__(inplanes, planes, stride, downsample, groups, base_width, dilation, norm_layer)
+
+        self.ela = EfficientLocalizationAttention(planes, kernel_size=kernel_size, num_groups=num_groups)
+
+    def forward(self, x):
+        identity = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+        
+        # Apply ELA attention
+        out = self.ela(out)
+        
+        out += identity
+        out = self.relu(out)
+
+
+        return out
+def get_resnet18(with_attention=True , **kwargs):
+    """
+    Creates a ResNet-18 model with ELA blocks.
+    """
+    model = None
+    if with_attention : 
+        model = ResNet(BasicBlockWithELA, [2, 2, 2, 2], **kwargs)
+    else :
+        model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
+    return model    
+
