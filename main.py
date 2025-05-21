@@ -93,11 +93,10 @@ def evaluate(model, criterion, data_loader,runs , device,print_freq=100, log_suf
             metric_logger.meters["acc1"].update(acc1.item(), n=batch_size)
             metric_logger.meters["acc5"].update(acc5.item(), n=batch_size)
             num_processed_samples += batch_size
-            if num_processed_samples % 49 == 0:
-                runs.log({"val_loss": loss.item()})
-                runs.log({"val_acc1": acc1.item()})
-                runs.log({"val_acc5": acc5.item()})
-                runs.log({"num_processed_samples": num_processed_samples})
+            runs.log({"val_loss": loss.item()})
+            runs.log({"val_acc1": acc1.item()})
+            runs.log({"val_acc5": acc5.item()})
+            runs.log({"num_processed_samples": num_processed_samples})
     # gather the stats from all processes
 
     print(f"{header} Acc@1 {metric_logger.acc1.global_avg:.3f} Acc@5 {metric_logger.acc5.global_avg:.3f}")
