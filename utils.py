@@ -412,6 +412,6 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument("--weights", default=None, type=str, help="the weights enum name to load, must be None to load 200 classes model")
     parser.add_argument("--wandb-key", default=None, type=str, help="the key for wandb login")
-    parser.add_argument("--with-attention", action="store_true", help="whether to use Efficient Localization Attention")
+    parser.add_argument("--with-attention", action="store_false", help="whether to use Efficient Localization Attention")
     return parser
 
