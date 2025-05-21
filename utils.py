@@ -79,10 +79,6 @@ class MetricLogger:
             loss_str.append(f"{name}: {str(meter)}")
         return self.delimiter.join(loss_str)
 
-    def synchronize_between_processes(self):
-        for meter in self.meters.values():
-            meter.synchronize_between_processes()
-
     def add_meter(self, name, meter):
         self.meters[name] = meter
 

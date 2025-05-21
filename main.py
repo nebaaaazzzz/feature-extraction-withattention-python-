@@ -8,6 +8,8 @@ import time
 from torchvision import transforms
 from tiny_imagenet import TinyImageNet
 import utils
+import sys
+from resnet import resnet18_with_ela
 
 def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, args):
     model.train()
@@ -128,11 +130,13 @@ def main(args):
     )
 
     print("Creating model")
-    model = torchvision.models.get_model(args.model, weights=args.weights, num_classes=num_classes)
+    model = resnet18_with_ela(num_classes=num_classes)
+    print(*model.layer1.children())
     model.conv1 = nn.Conv2d(3,64, kernel_size=(3,3), stride=(1,1), padding=(1,1), bias=False)
     model.maxpool = nn.Identity()
     model.to(device)
-
+    nn.BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    sys.exit()
     criterion = nn.CrossEntropyLoss(label_smoothing=args.label_smoothing)
 
     custom_keys_weight_decay = []
