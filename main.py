@@ -138,7 +138,7 @@ def main(args , runs):
     )
 
     print("Creating model")
-    model = get_resnet18(args.with_attention  ,num_classes=num_classes)
+    model = get_resnet18(args.ela_kernelsize , args.ela_groups , args.ela_numgroup, args.with_attention  , num_classes=num_classes)
     model.conv1 = nn.Conv2d(3,64, kernel_size=(3,3), stride=(1,1), padding=(1,1), bias=False)
     model.maxpool = nn.Identity()
     model.to(device)
@@ -239,15 +239,14 @@ def main(args , runs):
 
 if __name__ == "__main__":
     args = utils.get_args_parser().parse_args()
-    wandb.login()
+    print(args)
+    # wandb.login()
  
-    run = wandb.init(
-        project="feature extraciton",  # Specify your project
-        config=args ,
-        group="resnet18withela"
-    )
-    main(args , run )
+    # run = wandb.init(
+    #     project="feature extraciton",  # Specify your project
+    #     config=args ,
+    #     group="resnet18withela"
+    # )
+    # main(args , run )
     
-    run.finish()
-    
-
+    # run.finish()

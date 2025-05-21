@@ -413,5 +413,8 @@ def get_args_parser(add_help=True):
     parser.add_argument("--weights", default=None, type=str, help="the weights enum name to load, must be None to load 200 classes model")
     parser.add_argument("--wandb-key", default=None, type=str, help="the key for wandb login")
     parser.add_argument('--with-attention',action='store_true', help='whether to use attention')
+    parser.add_argument('--ela-kernelsize',type=int, choices=[5,7] ,default=7, help='kernel size for ELA')
+    parser.add_argument('--ela-groups',type=int, choices=[16,32] , default=16, help='number of groups for ELA')
+    parser.add_argument('--ela-numgroup',action='store_true', help='whether to use attention')
     return parser
 
