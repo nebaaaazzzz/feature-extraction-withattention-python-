@@ -1,7 +1,6 @@
 from torchvision.models.resnet import BasicBlock, ResNet
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 class BasicBlockWithELA(BasicBlock):
@@ -33,13 +32,16 @@ class BasicBlockWithELA(BasicBlock):
         out = self.ela(out)
 
         return out
-def resnet18_with_ela(**kwargs):
+def get_resnet18(with_attention=True , **kwargs):
     """
     Creates a ResNet-18 model with ELA blocks.
     """
-    model = ResNet(BasicBlockWithELA, [2, 2, 2, 2], **kwargs)
+    model = None
+    if with_attention : 
+        model = ResNet(BasicBlockWithELA, [2, 2, 2, 2], **kwargs)
+    else :
+        model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)
     return model    
-
 
 class EfficientLocalizationAttention(nn.Module):
     def __init__(self, channel, kernel_size=7, num_groups=16):

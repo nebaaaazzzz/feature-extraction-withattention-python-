@@ -7,7 +7,7 @@ import time
 from torchvision import transforms
 from tiny_imagenet import TinyImageNet
 import utils
-from resnet import resnet18_with_ela
+from resnet import get_resnet18
 import wandb
 def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, args , runs):
     model.train()
@@ -134,7 +134,7 @@ def main(args , runs):
     )
 
     print("Creating model")
-    model = resnet18_with_ela(num_classes=num_classes)
+    model = get_resnet18(args.with_attention  ,num_classes=num_classes)
     model.conv1 = nn.Conv2d(3,64, kernel_size=(3,3), stride=(1,1), padding=(1,1), bias=False)
     model.maxpool = nn.Identity()
     model.to(device)
