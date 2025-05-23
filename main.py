@@ -24,9 +24,9 @@ def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, arg
         loss = criterion(output, target)
 
         optimizer.zero_grad()
-        loss.backward()
-        if args.clip_grad_norm is not None:
-            nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad_norm)
+        # loss.backward()
+        # if args.clip_grad_norm is not None:
+        #     nn.utils.clip_grad_norm_(model.parameters(), args.clip_grad_norm)
         optimizer.step()
 
         acc1, acc5 = utils.accuracy(output, target, topk=(1, 5))
@@ -138,7 +138,7 @@ def main(args , runs):
     )
 
     print("Creating model")
-    model = get_resnet18(args.ela_kernelsize , args.ela_groups , args.ela_numgroup, args.with_attention  , num_classes=num_classes)
+    model = get_resnet18(args.attention_type  ,args.ela_kernelsize , args.ela_groups , args.ela_numgroup , num_classes=num_classes)
     model.conv1 = nn.Conv2d(3,64, kernel_size=(3,3), stride=(1,1), padding=(1,1), bias=False)
     model.maxpool = nn.Identity()
     model.to(device)
@@ -239,13 +239,15 @@ def main(args , runs):
 
 if __name__ == "__main__":
     args = utils.get_args_parser().parse_args()
-    wandb.login()
- 
-    run = wandb.init(
-        project="feature extraciton",  # Specify your project
-        config=args ,
-        group="resnet18withela"
-    )
+    # wandb.login()
+    run =None
+    # run = wandb.init(
+    #     project="feature extraciton",  # Specify your project
+    #     config=args ,
+    #     group="resnet18withela"
+    # )
     main(args , run )
     
-    run.finish()
+    # run.finish()
+
+

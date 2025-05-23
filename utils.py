@@ -303,7 +303,6 @@ def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description="PyTorch Classification Training on Tiny ImageNet", add_help=add_help)
 
     parser.add_argument("--data-path", type=str, help="dataset path")
-    parser.add_argument("--model", default="resnet18", type=str, help="model name")
     parser.add_argument("--device", type=str, help="device (Use cuda or cpu Default: cuda)")
     parser.add_argument(
         "-b", "--batch-size", default=32, type=int, help="images per gpu, the total batch size is $NGPU x batch_size"
@@ -342,8 +341,6 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         "--label-smoothing", default=0.0, type=float, help="label smoothing (default: 0.0)", dest="label_smoothing"
     )
-    parser.add_argument("--mixup-alpha", default=0.0, type=float, help="mixup alpha (default: 0.0)")
-    parser.add_argument("--cutmix-alpha", default=0.0, type=float, help="cutmix alpha (default: 0.0)")
     parser.add_argument("--lr-scheduler", default="steplr", type=str, help="the lr scheduler (default: steplr)")
     parser.add_argument("--lr-warmup-epochs", default=0, type=int, help="the number of epochs to warmup (default: 0)")
     parser.add_argument(
@@ -376,43 +373,8 @@ def get_args_parser(add_help=True):
         help="Only test the model",
         action="store_true",
     )
-    parser.add_argument("--auto-augment", default=None, type=str, help="auto augment policy (default: None)")
-    parser.add_argument("--ra-magnitude", default=9, type=int, help="magnitude of auto augment policy")
-    parser.add_argument("--augmix-severity", default=3, type=int, help="severity of augmix policy")
-    parser.add_argument("--random-erase", default=0.0, type=float, help="random erasing probability (default: 0.0)")
 
-    # Mixed precision training parameters
-    parser.add_argument("--amp", action="store_true", help="Use torch.cuda.amp for mixed precision training")
-
-    # distributed training parameters
-    parser.add_argument("--world-size", default=1, type=int, help="number of distributed processes")
-    parser.add_argument("--dist-url", default="env://", type=str, help="url used to set up distributed training")
-    parser.add_argument(
-        "--model-ema", action="store_true", help="enable tracking Exponential Moving Average of model parameters"
-    )
-    parser.add_argument(
-        "--model-ema-steps",
-        type=int,
-        default=32,
-        help="the number of iterations that controls how often to update the EMA model (default: 32)",
-    )
-    parser.add_argument(
-        "--model-ema-decay",
-        type=float,
-        default=0.99998,
-        help="decay factor for Exponential Moving Average of model parameters (default: 0.99998)",
-    )
-    parser.add_argument(
-        "--use-deterministic-algorithms", action="store_true", help="Forces the use of deterministic algorithms only."
-    )
-    parser.add_argument("--clip-grad-norm", default=None, type=float, help="the maximum gradient norm (default None)")
-    parser.add_argument("--ra-sampler", action="store_true", help="whether to use Repeated Augmentation in training")
-    parser.add_argument(
-        "--ra-reps", default=3, type=int, help="number of repetitions for Repeated Augmentation (default: 3)"
-    )
-    parser.add_argument("--weights", default=None, type=str, help="the weights enum name to load, must be None to load 200 classes model")
-    parser.add_argument("--wandb-key", default=None, type=str, help="the key for wandb login")
-    parser.add_argument('--with-attention',action='store_true', help='whether to use attention')
+    parser.add_argument('--attention-type',type=str , choices=['SE' , 'ELA' , 'CA' , 'ECA' , 'BAM' , 'CBAM'], help='whether to use attention and type') 
     parser.add_argument('--ela-kernelsize',type=int, choices=[5,7] ,default=7, help='kernel size for ELA')
     parser.add_argument('--ela-groups',type=int, choices=[16,32] , default=16, help='number of groups for ELA')
     parser.add_argument('--ela-numgroup',action='store_true', help='whether to use attention')
