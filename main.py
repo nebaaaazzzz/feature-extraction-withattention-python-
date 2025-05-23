@@ -239,15 +239,14 @@ def main(args , runs):
 
 if __name__ == "__main__":
     args = utils.get_args_parser().parse_args()
-    # wandb.login()
-    run =None
-    # run = wandb.init(
-    #     project="feature extraciton",  # Specify your project
-    #     config=args ,
-    #     group="resnet18withela"
-    # )
+    wandb.login()
+    run = wandb.init(
+        project="feature extraciton",  # Specify your project
+        config=args ,
+        group="resnet18withela"
+    )
     main(args , run )
     
-    # run.finish()
+    run.finish()
 
 
