@@ -77,8 +77,8 @@ class BAMBlock(nn.Module):
 
     def forward(self, x):
         b, c, _, _ = x.size()
-        sa_out=self.sa(x)
         ca_out=self.ca(x)
+        sa_out=self.sa(x)
         weight=self.sigmoid(sa_out+ca_out)
         out=(1+weight)*x
         return out

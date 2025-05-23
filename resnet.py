@@ -24,19 +24,20 @@ class BasicBlockWithAttention(BasicBlock):
         super().__init__(inplanes, planes, stride, downsample, groups, base_width, dilation, norm_layer)
         
         if(self.ATTENTION_TYPE == 'SE'):
+            print("se attention")
             self.attention = SEAttention(planes)
         elif(self.ATTENTION_TYPE == 'ELA'):
             self.attention = EfficientLocalizationAttention(planes, kernel_size=self.KERNEL_SIZE, num_groups=self.NUMBER_GROUPS , group_setting=self.GROUP_SETTING)
         elif(self.ATTENTION_TYPE == "CA") :
-            self.attention = CoordAtt(planes, planes//2, planes//2)
+            self.attention = CoordAtt(planes, planes, reduction=16)
         elif(self.ATTENTION_TYPE == "ECA") :
-            self.attention = ECAAttention(planes, kernel_size=self.KERNEL_SIZE)
+            self.attention = ECAAttention()
         elif(self.ATTENTION_TYPE == "BAM") :
-            self.attention = BAMBlock(planes, planes//2, planes//2)
+            self.attention = BAMBlock(planes, reduction=16)
         elif(self.ATTENTION_TYPE == "CBAM") :
             self.attention = CBAMBlock(planes, planes//2, planes//2)        
         elif(self.ATTENTION_TYPE == "A2") :
-            self.attention = DoubleAttention(planes, planes//2, planes//2)                
+            self.attention = DoubleAttention(planes, planes//2, planes//2)               
         else:
             self.attention = nn.Identity()
         

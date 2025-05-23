@@ -86,8 +86,7 @@ def evaluate(model, criterion, data_loader,runs , device,print_freq=100, log_suf
             loss = criterion(output, target)
 
             acc1, acc5 = utils.accuracy(output, target, topk=(1, 5))
-            # FIXME need to take into account that the datasets
-            # could have been padded in distributed setup
+            
             batch_size = image.shape[0]
             metric_logger.update(loss=loss.item())
             metric_logger.meters["acc1"].update(acc1.item(), n=batch_size)
