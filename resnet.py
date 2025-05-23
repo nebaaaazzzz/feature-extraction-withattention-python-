@@ -16,7 +16,7 @@ class BasicBlockWithAttention(BasicBlock):
     ATTENTION_TYPE = None
     KERNEL_SIZE = 7
     NUMBER_GROUPS = 16
-    IS_GROUPS = False
+    GROUP_SETTING = "channel"
     
     def __init__(self, inplanes, planes, stride=1, downsample=None, groups=1,
                  base_width=64, dilation=1, norm_layer=None,):
@@ -26,7 +26,7 @@ class BasicBlockWithAttention(BasicBlock):
         if(self.ATTENTION_TYPE == 'SE'):
             self.attention = SEAttention(planes)
         elif(self.ATTENTION_TYPE == 'ELA'):
-            self.attention = EfficientLocalizationAttention(planes, kernel_size=self.KERNEL_SIZE, num_groups=self.NUMBER_GROUPS , is_groups=self.IS_GROUPS)
+            self.attention = EfficientLocalizationAttention(planes, kernel_size=self.KERNEL_SIZE, num_groups=self.NUMBER_GROUPS , group_setting=self.GROUP_SETTING)
         elif(self.ATTENTION_TYPE == "CA") :
             self.attention = CoordAtt(planes, planes//2, planes//2)
         elif(self.ATTENTION_TYPE == "ECA") :
@@ -62,7 +62,7 @@ class BasicBlockWithAttention(BasicBlock):
 
 
         return out
-def get_resnet18(attention_type , ela_kernelsize , ela_groups , ela_numgroup , **kwargs):
+def get_resnet18(attention_type , ela_kernelsize , ela_group_setting , ela_numgroup , **kwargs):
     """
     Creates a ResNet-18 model with ELA blocks.
     """
@@ -72,9 +72,8 @@ def get_resnet18(attention_type , ela_kernelsize , ela_groups , ela_numgroup , *
         BasicBlockWithAttention.ATTENTION_TYPE = attention_type
         BasicBlockWithAttention.KERNEL_SIZE = ela_kernelsize
         BasicBlockWithAttention.NUMBER_GROUPS = ela_numgroup
-        BasicBlockWithAttention.IS_GROUPS = ela_groups
+        BasicBlockWithAttention.GROUP_SETTING = ela_group_setting
         
-        print(attention_type , ela_kernelsize , ela_groups , ela_numgroup)
         model = ResNet(BasicBlockWithAttention, [2, 2, 2, 2], **kwargs)
     else :
         model = ResNet(BasicBlock, [2, 2, 2, 2], **kwargs)

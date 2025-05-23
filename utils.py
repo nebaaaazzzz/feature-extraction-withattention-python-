@@ -376,7 +376,7 @@ def get_args_parser(add_help=True):
 
     parser.add_argument('--attention-type',type=str , choices=['SE' , 'ELA' , 'CA' , 'ECA' , 'BAM' , 'CBAM'], help='whether to use attention and type') 
     parser.add_argument('--ela-kernelsize',type=int, choices=[5,7] ,default=7, help='kernel size for ELA')
-    parser.add_argument('--ela-groups',type=int, choices=[16,32] , default=16, help='number of groups for ELA')
-    parser.add_argument('--ela-numgroup',action='store_true', help='whether to use attention')
+    parser.add_argument('--ela-numgroup',type=int, choices=[16,32] , default=16, help='number of groups for ELA')
+    parser.add_argument('--ela-group-setting',type=str , choices=["channel" , "channel/8"],default="channel" , help='group setting for ELA')
     return parser
 

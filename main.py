@@ -138,7 +138,7 @@ def main(args , runs):
     )
 
     print("Creating model")
-    model = get_resnet18(args.attention_type  ,args.ela_kernelsize , args.ela_groups , args.ela_numgroup , num_classes=num_classes)
+    model = get_resnet18(args.attention_type  ,args.ela_kernelsize , args.ela_group_setting , args.ela_numgroup , num_classes=num_classes)
     model.conv1 = nn.Conv2d(3,64, kernel_size=(3,3), stride=(1,1), padding=(1,1), bias=False)
     model.maxpool = nn.Identity()
     model.to(device)
@@ -245,7 +245,7 @@ if __name__ == "__main__":
         config=args ,
         group="resnet18withela"
     )
-    main(args , run )
+    main(args , None )
     
     run.finish()
 
