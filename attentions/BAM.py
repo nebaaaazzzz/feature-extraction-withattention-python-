@@ -1,5 +1,3 @@
-import numpy as np
-import torch
 from torch import nn
 from torch.nn import init
 
@@ -32,14 +30,14 @@ class ChannelAttention(nn.Module):
         return res
 
 class SpatialAttention(nn.Module):
-    def __init__(self,channel,reduction=16,num_layers=3,dia_val=2):
+    def __init__(self,channel,reduction=16,num_layers=3):
         super().__init__()
         self.sa=nn.Sequential()
         self.sa.add_module('conv_reduce1',nn.Conv2d(kernel_size=1,in_channels=channel,out_channels=channel//reduction))
         self.sa.add_module('bn_reduce1',nn.BatchNorm2d(channel//reduction))
         self.sa.add_module('relu_reduce1',nn.ReLU())
         for i in range(num_layers):
-            self.sa.add_module('conv_%d'%i,nn.Conv2d(kernel_size=3,in_channels=channel//reduction,out_channels=channel//reduction,padding=1,dilation=dia_val))
+            self.sa.add_module('conv_%d'%i,nn.Conv2d(kernel_size=3,in_channels=channel//reduction,out_channels=channel//reduction,padding=1))
             self.sa.add_module('bn_%d'%i,nn.BatchNorm2d(channel//reduction))
             self.sa.add_module('relu_%d'%i,nn.ReLU())
         self.sa.add_module('last_conv',nn.Conv2d(channel//reduction,1,kernel_size=1))
@@ -49,15 +47,12 @@ class SpatialAttention(nn.Module):
         res=res.expand_as(x)
         return res
 
-
-
-
 class BAMBlock(nn.Module):
 
-    def __init__(self, channel=512,reduction=16,dia_val=2):
+    def __init__(self, channel=512,reduction=16):
         super().__init__()
         self.ca=ChannelAttention(channel=channel,reduction=reduction)
-        self.sa=SpatialAttention(channel=channel,reduction=reduction,dia_val=dia_val)
+        self.sa=SpatialAttention(channel=channel,reduction=reduction)
         self.sigmoid=nn.Sigmoid()
 
 

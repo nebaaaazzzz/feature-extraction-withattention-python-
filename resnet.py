@@ -38,11 +38,13 @@ class BasicBlockWithAttention(BasicBlock):
             self.attention =  ShuffleAttention(planes)  
             
         elif(self.ATTENTION_TYPE == "BAM") :
+            print("bammmmmmmmm")
             self.attention = BAMBlock(planes, reduction=16)
+            
         elif(self.ATTENTION_TYPE == "CBAM") :
-            self.attention = CBAMBlock(planes, planes//2, planes//2)        
+            self.attention = CBAMBlock(planes, )        
         elif(self.ATTENTION_TYPE == "A2") :
-            self.attention = DoubleAttention(planes, planes//2, planes//2)               
+            self.attention = DoubleAttention(planes, c_m=planes//2, c_n=planes//2, reconstruct=True)
         else:
             self.attention = nn.Identity()
         
