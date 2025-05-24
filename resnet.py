@@ -8,7 +8,7 @@ from attentions.ECA import ECAAttention
 from attentions.BAM import BAMBlock    
 from attentions.CBAM import CBAMBlock
 from attentions.A2 import DoubleAttention
-
+from attentions.Triplate import TripletAttention
 
 class BasicBlockWithAttention(BasicBlock):
     
@@ -32,6 +32,10 @@ class BasicBlockWithAttention(BasicBlock):
             self.attention = CoordAtt(planes, planes, reduction=16)
         elif(self.ATTENTION_TYPE == "ECA") :
             self.attention = ECAAttention()
+        elif(self.ATTENTION_TYPE == "TRIPLATE") :
+            print("trafsaf fas ")
+            self.attention =  TripletAttention()  
+            
         elif(self.ATTENTION_TYPE == "BAM") :
             self.attention = BAMBlock(planes, reduction=16)
         elif(self.ATTENTION_TYPE == "CBAM") :

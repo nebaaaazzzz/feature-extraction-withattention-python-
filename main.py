@@ -244,7 +244,7 @@ if __name__ == "__main__":
         config=args ,
         group="resnet18withela"
     )
-    main(args , None )
+    main(args , run )
     
     run.finish()
 
