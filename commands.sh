@@ -28,7 +28,9 @@ python main.py \
     --lr-warmup-decay 0.01 \
     --output-dir 'save/rn18_50ep' \
     --data-path='.' \
-    --attention-type "ELA" 
+    --attention-type "ELA" \
+    --ela-kernelsize 7 \
+    --ela-numgroup 16
 
 #ela tiny
 python main.py \
@@ -179,6 +181,8 @@ python main.py \
     --output-dir 'save/rn18_50ep' \
     --data-path='.' \
     --attention-type "A2" 
+
+    
 #Triplate
 python main.py \
     --batch-size 256 \

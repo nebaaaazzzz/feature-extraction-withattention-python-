@@ -24,7 +24,6 @@ class BasicBlockWithAttention(BasicBlock):
         super().__init__(inplanes, planes, stride, downsample, groups, base_width, dilation, norm_layer)
         
         if(self.ATTENTION_TYPE == 'SE'):
-            print("se attention")
             self.attention = SEAttention(planes)
         elif(self.ATTENTION_TYPE == 'ELA'):
             self.attention = EfficientLocalizationAttention(planes, kernel_size=self.KERNEL_SIZE, num_groups=self.NUMBER_GROUPS , group_setting=self.GROUP_SETTING)
@@ -38,7 +37,6 @@ class BasicBlockWithAttention(BasicBlock):
             self.attention =  ShuffleAttention(planes)  
             
         elif(self.ATTENTION_TYPE == "BAM") :
-            print("bammmmmmmmm")
             self.attention = BAMBlock(planes, reduction=16)
             
         elif(self.ATTENTION_TYPE == "CBAM") :

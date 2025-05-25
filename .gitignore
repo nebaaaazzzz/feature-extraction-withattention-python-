@@ -11,3 +11,4 @@ DONTREADME.md
 # Virtual environments
 .venv
 test.py
+/models

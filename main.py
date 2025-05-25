@@ -9,6 +9,7 @@ from tiny_imagenet import TinyImageNet
 import utils
 from resnet import get_resnet18
 import wandb
+torch.manual_seed(42)
 def train_one_epoch(model, criterion, optimizer, data_loader, device, epoch, args , runs):
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")

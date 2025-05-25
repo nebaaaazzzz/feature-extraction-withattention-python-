@@ -5,7 +5,6 @@ from torch.nn import init
 from torch.nn import functional as F
 
 
-
 class DoubleAttention(nn.Module):
 
     def __init__(self, in_channels,c_m,c_n,reconstruct = True):
